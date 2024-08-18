@@ -1,99 +1,27 @@
-// let scriptURL = null; // Define the variable to store the data
 
-// async function fetchJSONData() {
-//     try {
-//         const response = await fetch("./url.json");
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! Status: ${response.status}`);
-//         }
-//         return await response.json(); // Return the fetched data
-//     } catch (error) {
-//         console.error("Unable to fetch data:", error);
-//         throw error; // Re-throw error if needed
-//     }
-// }
+//get the URL from the script, unless changed to mess with this
+const scriptURL = "https://script.google.com/macros/s/AKfycbzozjv0K7yy1YjwzhPc0S0s_GP_cHkqia8fSNkAg2boP1nZUVZboSGlbZ-fI0M15D_v/exec";
 
-// // Function to initialize and set the variable
-// async function initializeData() {
-//     try {
-//         scriptURL = await fetchJSONData();
-//     } catch (error) {
-//         console.error("Error initializing data:", error);
-//     }
-// }
+const form = document.forms['contact-form']
 
-// // Call the initialization function
-// initializeData().then(() => {
-//     // Use the `scriptURL` variable here, after it has been initialized
-//     console.log("Script URL available for use:", scriptURL);
-// });
-
-
-// const form = document.forms["contact-form"];
-
-// form.addEventListener('submit', e=>{
-//     e.preventDefault();
-//     fetch(scriptURL,{method: 'POST', body: new FormData(form)});
-//     .then(response =>alert("Thank you! your form is submitted sucessfully."));
-//     .then(()=>{window.location.reload();})
-//     .catch(error=> console.error('error.message'))
-// })
-
-// Define the variable to store the script URL
-let scriptURL = null;
-
-// Function to fetch the JSON data and initialize the scriptURL
-async function initializeData() {
-    try {
-        const response = await fetch("./url.json"); // Adjust the path as needed
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        scriptURL = data.urltest; // Extract the value associated with 'urltest'
-        console.log("Script URL initialized");
-    } catch (error) {
-        console.error("Unable to fetch data:", error);
-    }
-}
-
-// Function to handle form submission
-function handleFormSubmission() {
-    const form = document.forms["contact-form"];
-    
-    form.addEventListener('submit', async e => {
-        e.preventDefault();
-        
-        // Check if scriptURL has been initialized
-        if (!scriptURL) {
-            console.error("Script URL is not initialized.");
-            return;
-        }
-        
-        try {
-            const response = await fetch(scriptURL, {
-                method: 'POST',
-                body: new FormData(form)
-            });
-            
+form.addEventListener('submit', e => {
+    e.preventDefault()
+    console.log('Form submission attempted. scriptURL:', scriptURL) // Debug log
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`)
             }
-            
-            alert("Thank you! Your form has been submitted successfully.");
-            window.location.reload();
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-    });
-}
-
-// Initialize data and set up form handler
-initializeData().then(() => {
-    handleFormSubmission();
-});
-
-
+            console.log('Response received:', response) // Debug log
+            return response
+        })
+        .then(response => alert("Thank you! your form is submitted successfully."))
+        .then(() => { window.location.reload(); })
+        .catch(error => {
+            console.error('Fetch Error:', error)
+            alert('There was a problem submitting the form. Please try again.')
+        })
+})
 
 
 document.getElementById('theme-toggle').addEventListener('click', function() {
